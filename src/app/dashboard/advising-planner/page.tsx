@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Course, Day, PlannerPreferences, Section, TimetablePlan } from "@/lib/types";
 import { solveTimetables, SolveResult } from "@/lib/planner/solve";
 import { parseNaturalLanguagePreferences } from "@/lib/planner/nlp";
 import { CoursePicker } from "@/components/course-picker/CoursePicker";
 import { TimetableGrid } from "@/components/timetable-grid/TimetableGrid";
-import { formatTimeRange } from "@/lib/time";
 import {
   Calendar,
   Sparkles,
-  Sliders,
   CheckCircle2,
   AlertTriangle,
   Bookmark,
@@ -21,9 +20,11 @@ import {
   Sun,
   Moon,
   Wand2,
+  Copy,
 } from "lucide-react";
 
-export default function AdvisingPlannerPage() {
+function PlannerContent() {
+  const searchParams = useSearchParams();
   const [semester, setSemester] = useState("Fall 2026");
   const [semesters] = useState<string[]>(["Fall 2026", "Summer 2026", "Spring 2026"]);
   const [allSections, setAllSections] = useState<Section[]>([]);
@@ -51,7 +52,7 @@ export default function AdvisingPlannerPage() {
   const [solveResult, setSolveResult] = useState<SolveResult | null>(null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [isSolving, setIsSolving] = useState<boolean>(false);
-  const [saveSuccessMsg, setSaveSuccessMsg] = useState<string | null>(null);
+  const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
 
   // Working sections for interactive swapping
   const [currentGridSections, setCurrentGridSections] = useState<Section[]>([]);
@@ -68,20 +69,36 @@ export default function AdvisingPlannerPage() {
         const secData = await secRes.json();
 
         if (courseData.courses) setAvailableCourses(courseData.courses);
-        if (secData.sections) setAllSections(secData.sections);
+        if (secData.sections) {
+          setAllSections(secData.sections);
+
+          // Check if URL has a shared plan query param e.g. ?plan=sec1,sec2
+          const sharedPlanParam = searchParams.get("plan");
+          if (sharedPlanParam) {
+            const ids = sharedPlanParam.split(",").map((s) => s.trim());
+            const matchedSections = secData.sections.filter((s: Section) => ids.includes(s.id));
+            if (matchedSections.length > 0) {
+              setCurrentGridSections(matchedSections);
+              const courseCodes = Array.from(new Set(matchedSections.map((s: Section) => s.courseCode)));
+              setSelectedCourses(courseCodes as string[]);
+              setNotificationMsg("Shared routine loaded from URL link!");
+              setTimeout(() => setNotificationMsg(null), 4000);
+            }
+          }
+        }
       } catch (err) {
         console.error("Initialization error:", err);
       }
     }
     initData();
-  }, [semester]);
+  }, [semester, searchParams]);
 
   // Run solver
   const handleSolve = () => {
     if (selectedCourses.length === 0) return;
 
     setIsSolving(true);
-    setSaveSuccessMsg(null);
+    setNotificationMsg(null);
 
     const coursesSections: Section[][] = [];
     const missing: string[] = [];
@@ -130,7 +147,7 @@ export default function AdvisingPlannerPage() {
   };
 
   useEffect(() => {
-    if (allSections.length > 0 && selectedCourses.length > 0 && !solveResult) {
+    if (allSections.length > 0 && selectedCourses.length > 0 && !solveResult && !searchParams.get("plan")) {
       handleSolve();
     }
   }, [allSections]);
@@ -173,12 +190,23 @@ export default function AdvisingPlannerPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setSaveSuccessMsg("Routine saved successfully to your Saved Plans!");
-        setTimeout(() => setSaveSuccessMsg(null), 4000);
+        setNotificationMsg("Routine saved successfully to your Saved Plans!");
+        setTimeout(() => setNotificationMsg(null), 4000);
       }
     } catch (e) {
       console.error("Save plan failed:", e);
     }
+  };
+
+  // Copy shareable routine link
+  const handleShareLink = () => {
+    if (currentGridSections.length === 0) return;
+    const ids = currentGridSections.map((s) => s.id).join(",");
+    const shareUrl = `${window.location.origin}/dashboard/advising-planner?plan=${encodeURIComponent(ids)}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setNotificationMsg("Share link copied to clipboard! Anyone with the link can view this routine.");
+      setTimeout(() => setNotificationMsg(null), 4000);
+    });
   };
 
   // AI NLP Handler
@@ -224,9 +252,19 @@ export default function AdvisingPlannerPage() {
           </p>
         </div>
 
-        {/* Semester Selector */}
+        {/* Semester Selector & Share Action */}
         <div className="flex items-center space-x-2">
-          <label className="text-xs font-bold text-slate-500">Advising For:</label>
+          {currentGridSections.length > 0 && (
+            <button
+              onClick={handleShareLink}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#1CAF9A] hover:bg-[#168e7d] text-white shadow-xs transition-all"
+              title="Share routine by URL link"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Share Link</span>
+            </button>
+          )}
+
           <select
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
@@ -468,11 +506,11 @@ export default function AdvisingPlannerPage() {
 
         {/* Right Column (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
-          {saveSuccessMsg && (
+          {notificationMsg && (
             <div className="p-3 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 text-xs font-bold rounded-2xl flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>{saveSuccessMsg}</span>
+                <span>{notificationMsg}</span>
               </div>
             </div>
           )}
@@ -490,14 +528,25 @@ export default function AdvisingPlannerPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleSavePlan}
-                  className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#effaf7] dark:bg-[#072c29] text-[#1CAF9A] hover:bg-[#d6f3ed] transition-colors"
-                >
-                  <Bookmark className="w-3.5 h-3.5" />
-                  <span>Save Plan</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={handleShareLink}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#f0f4f5] dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-[#1CAF9A]" />
+                    <span>Share</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSavePlan}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#effaf7] dark:bg-[#072c29] text-[#1CAF9A] hover:bg-[#d6f3ed] transition-colors"
+                  >
+                    <Bookmark className="w-3.5 h-3.5" />
+                    <span>Save Plan</span>
+                  </button>
+                </div>
               </div>
 
               <div className="flex gap-2 overflow-x-auto pb-2 pt-1">
@@ -572,5 +621,13 @@ export default function AdvisingPlannerPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdvisingPlannerPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Loading advising planner...</div>}>
+      <PlannerContent />
+    </Suspense>
   );
 }
