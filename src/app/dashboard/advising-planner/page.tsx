@@ -549,15 +549,18 @@ function PlannerContent() {
                 </div>
               </div>
 
-              <div className="flex gap-2 overflow-x-auto pb-2 pt-1">
+              <div className="flex gap-2 overflow-x-auto pb-2 pt-1" role="tablist" aria-label="Generated Routine Options">
                 {solveResult.plans.slice(0, 10).map((plan, idx) => {
                   const isSelected = selectedPlanIndex === idx;
                   return (
                     <button
                       key={plan.id}
                       type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      aria-label={`Select Routine ${idx + 1}, score ${plan.score}`}
                       onClick={() => handleSelectPlan(idx)}
-                      className={`flex-shrink-0 p-3 rounded-2xl border text-left text-xs transition-all w-48 ${
+                      className={`flex-shrink-0 p-3 rounded-2xl border text-left text-xs transition-all w-48 cursor-pointer ${
                         isSelected
                           ? "bg-[#effaf7] dark:bg-[#072c29] border-[#1CAF9A] ring-2 ring-[#1CAF9A]/30"
                           : "bg-[#f0f4f5]/60 dark:bg-slate-800/40 border-[#E4E7EA] dark:border-slate-700 hover:border-slate-300"

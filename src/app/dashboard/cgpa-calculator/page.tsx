@@ -135,10 +135,14 @@ export default function CGPACalculatorPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#E4E7EA] dark:border-slate-800">
+      <div className="flex border-b border-[#E4E7EA] dark:border-slate-800" role="tablist" aria-label="GPA Calculator Modes">
         <button
+          role="tab"
+          id="tab-semester"
+          aria-selected={activeTab === "semester"}
+          aria-controls="panel-semester"
           onClick={() => setActiveTab("semester")}
-          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
+          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 cursor-pointer ${
             activeTab === "semester"
               ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
               : "border-transparent text-slate-500 hover:text-[#1C4370]"
@@ -149,8 +153,12 @@ export default function CGPACalculatorPage() {
         </button>
 
         <button
+          role="tab"
+          id="tab-cumulative"
+          aria-selected={activeTab === "cumulative"}
+          aria-controls="panel-cumulative"
           onClick={() => setActiveTab("cumulative")}
-          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
+          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 cursor-pointer ${
             activeTab === "cumulative"
               ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
               : "border-transparent text-slate-500 hover:text-[#1C4370]"
@@ -161,8 +169,12 @@ export default function CGPACalculatorPage() {
         </button>
 
         <button
+          role="tab"
+          id="tab-whatif"
+          aria-selected={activeTab === "whatif"}
+          aria-controls="panel-whatif"
           onClick={() => setActiveTab("whatif")}
-          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
+          className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 cursor-pointer ${
             activeTab === "whatif"
               ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
               : "border-transparent text-slate-500 hover:text-[#1C4370]"
@@ -178,7 +190,12 @@ export default function CGPACalculatorPage() {
         <div className="lg:col-span-8 space-y-6">
           {/* TAB 1: SEMESTER GPA */}
           {activeTab === "semester" && (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5">
+            <div
+              id="panel-semester"
+              role="tabpanel"
+              aria-labelledby="tab-semester"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
@@ -291,7 +308,12 @@ export default function CGPACalculatorPage() {
 
           {/* TAB 2: CUMULATIVE CGPA */}
           {activeTab === "cumulative" && (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5">
+            <div
+              id="panel-cumulative"
+              role="tabpanel"
+              aria-labelledby="tab-cumulative"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
@@ -434,7 +456,12 @@ export default function CGPACalculatorPage() {
 
           {/* TAB 3: WHAT-IF TARGET SOLVER */}
           {activeTab === "whatif" && (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-6">
+            <div
+              id="panel-whatif"
+              role="tabpanel"
+              aria-labelledby="tab-whatif"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-6"
+            >
               <div>
                 <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
                   What-If Target CGPA Solver
