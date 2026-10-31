@@ -1,0 +1,16 @@
+{
+  "name": "EWU Pro - Advising & Course Planner",
+  "short_name": "EWU Pro",
+  "description": "Smart course advising planner and CGPA calculator for East West University students",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a2540",
+  "theme_color": "#0a2540",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
