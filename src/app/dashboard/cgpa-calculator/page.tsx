@@ -12,7 +12,6 @@ import {
   GraduationCap,
   Plus,
   Trash2,
-  Sparkles,
   Calculator,
   Target,
   BookOpen,
@@ -20,6 +19,8 @@ import {
   RotateCcw,
   CheckCircle,
   AlertTriangle,
+  Download,
+  Share2,
 } from "lucide-react";
 
 interface CourseRow {
@@ -92,27 +93,55 @@ export default function CGPACalculatorPage() {
     setCumulativeCourses(cumulativeCourses.filter((c) => c.id !== id));
   };
 
+  // Export Grade Summary as CSV
+  const handleExportCSV = () => {
+    const list = activeTab === "semester" ? semesterCourses : cumulativeCourses;
+    const gpa = activeTab === "semester" ? semesterResult.gpa : cumulativeResult.gpa;
+    const header = "Course,Credits,Grade\n";
+    const rows = list.map((c) => `${c.name || "Untitled"},${c.credits},${c.grade}`).join("\n");
+    const summary = `\nTotal Credits,${activeTab === "semester" ? semesterResult.totalCredits : cumulativeResult.totalCredits}\nCalculated GPA,${gpa}\nScale,EWU Official 10-Tier Scale (portal.ewubd.edu)\n`;
+
+    const blob = new Blob([header + rows + summary], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `ewu-cgpa-report-${Date.now()}.csv`;
+    link.click();
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-center space-x-2">
-          <GraduationCap className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-          <span>EWU CGPA & Target Calculator</span>
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Accurately compute your semester GPA, cumulative standing, and graduation what-if targets based on East West University&apos;s official 10-tier scale.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black text-[#1C4370] dark:text-white flex items-center space-x-2">
+            <GraduationCap className="w-8 h-8 text-[#1CAF9A]" />
+            <span>EWU CGPA & Target Calculator</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Accurately compute your semester GPA, cumulative standing, and graduation what-if targets based on East West University&apos;s official 10-tier scale.
+          </p>
+        </div>
+
+        {activeTab !== "whatif" && (
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#1C4370] hover:bg-[#143154] text-white shadow-xs transition-colors self-start sm:self-auto"
+          >
+            <Download className="w-3.5 h-3.5 text-[#1CAF9A]" />
+            <span>Export CSV Report</span>
+          </button>
+        )}
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800">
+      <div className="flex border-b border-[#E4E7EA] dark:border-slate-800">
         <button
           onClick={() => setActiveTab("semester")}
           className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
             activeTab === "semester"
-              ? "border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400"
-              : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
+              : "border-transparent text-slate-500 hover:text-[#1C4370]"
           }`}
         >
           <Calculator className="w-4 h-4" />
@@ -123,8 +152,8 @@ export default function CGPACalculatorPage() {
           onClick={() => setActiveTab("cumulative")}
           className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
             activeTab === "cumulative"
-              ? "border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400"
-              : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
+              : "border-transparent text-slate-500 hover:text-[#1C4370]"
           }`}
         >
           <RotateCcw className="w-4 h-4" />
@@ -135,8 +164,8 @@ export default function CGPACalculatorPage() {
           onClick={() => setActiveTab("whatif")}
           className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
             activeTab === "whatif"
-              ? "border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400"
-              : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              ? "border-[#1CAF9A] text-[#1C4370] dark:text-[#1CAF9A]"
+              : "border-transparent text-slate-500 hover:text-[#1C4370]"
           }`}
         >
           <Target className="w-4 h-4" />
@@ -145,14 +174,14 @@ export default function CGPACalculatorPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Calculator Content (8 cols) */}
+        {/* Left Column (8 cols) */}
         <div className="lg:col-span-8 space-y-6">
           {/* TAB 1: SEMESTER GPA */}
           {activeTab === "semester" && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-5">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
                     Semester Course Grades
                   </h3>
                   <p className="text-xs text-slate-500">
@@ -160,12 +189,11 @@ export default function CGPACalculatorPage() {
                   </p>
                 </div>
 
-                {/* Score Preview Badge */}
                 <div className="text-right">
                   <span className="text-[10px] text-slate-400 uppercase font-bold block">
                     Semester GPA
                   </span>
-                  <span className="text-2xl font-black text-primary-600 dark:text-primary-400">
+                  <span className="text-3xl font-black text-[#1CAF9A]">
                     {semesterResult.gpa.toFixed(2)}
                   </span>
                 </div>
@@ -176,7 +204,7 @@ export default function CGPACalculatorPage() {
                 {semesterCourses.map((c, index) => (
                   <div
                     key={c.id}
-                    className="grid grid-cols-12 gap-2 items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-xs"
+                    className="grid grid-cols-12 gap-2 items-center bg-[#f0f4f5]/60 dark:bg-slate-800/50 p-2.5 rounded-2xl border border-[#E4E7EA] dark:border-slate-800 text-xs"
                   >
                     <div className="col-span-5">
                       <input
@@ -188,7 +216,7 @@ export default function CGPACalculatorPage() {
                           setSemesterCourses(updated);
                         }}
                         placeholder={`Course ${index + 1} (e.g. CSE110)`}
-                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
+                        className="w-full px-3 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
                       />
                     </div>
 
@@ -200,7 +228,7 @@ export default function CGPACalculatorPage() {
                           updated[index].credits = Number(e.target.value);
                           setSemesterCourses(updated);
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
+                        className="w-full px-2 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
                       >
                         <option value={1}>1.0 Credit (Lab)</option>
                         <option value={1.5}>1.5 Credits</option>
@@ -217,7 +245,7 @@ export default function CGPACalculatorPage() {
                           updated[index].grade = e.target.value;
                           setSemesterCourses(updated);
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-primary-600 dark:text-primary-400"
+                        className="w-full px-2 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-[#1C4370] dark:text-[#1CAF9A]"
                       >
                         {EWU_GRADE_SCALE.map((g) => (
                           <option key={g.grade} value={g.grade}>
@@ -247,7 +275,7 @@ export default function CGPACalculatorPage() {
                 <button
                   type="button"
                   onClick={addSemesterCourse}
-                  className="inline-flex items-center space-x-1 px-3 py-2 rounded-xl text-xs font-bold bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 hover:bg-primary-100 transition-colors"
+                  className="inline-flex items-center space-x-1 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#effaf7] dark:bg-[#072c29] text-[#1CAF9A] hover:bg-[#d6f3ed] transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Another Course</span>
@@ -263,10 +291,10 @@ export default function CGPACalculatorPage() {
 
           {/* TAB 2: CUMULATIVE CGPA */}
           {activeTab === "cumulative" && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-5">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
                     Cumulative CGPA Calculator
                   </h3>
                   <p className="text-xs text-slate-500">
@@ -278,14 +306,14 @@ export default function CGPACalculatorPage() {
                   <span className="text-[10px] text-slate-400 uppercase font-bold block">
                     Updated CGPA
                   </span>
-                  <span className="text-2xl font-black text-primary-600 dark:text-primary-400">
+                  <span className="text-3xl font-black text-[#1CAF9A]">
                     {cumulativeResult.gpa.toFixed(2)}
                   </span>
                 </div>
               </div>
 
               {/* Previous Record Inputs */}
-              <div className="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-4 bg-[#f0f4f5]/60 dark:bg-slate-800/40 p-4 rounded-2xl border border-[#E4E7EA] dark:border-slate-800">
                 <div>
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Previous Completed Credits:
@@ -296,7 +324,7 @@ export default function CGPACalculatorPage() {
                     max={180}
                     value={prevCredits}
                     onChange={(e) => setPrevCredits(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold"
                   />
                 </div>
 
@@ -311,7 +339,7 @@ export default function CGPACalculatorPage() {
                     max={4.0}
                     value={prevCGPA}
                     onChange={(e) => setPrevCGPA(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold"
                   />
                 </div>
               </div>
@@ -324,7 +352,7 @@ export default function CGPACalculatorPage() {
                 {cumulativeCourses.map((c, index) => (
                   <div
                     key={c.id}
-                    className="grid grid-cols-12 gap-2 items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-xs"
+                    className="grid grid-cols-12 gap-2 items-center bg-[#f0f4f5]/60 dark:bg-slate-800/50 p-2.5 rounded-2xl border border-[#E4E7EA] dark:border-slate-800 text-xs"
                   >
                     <div className="col-span-5">
                       <input
@@ -336,7 +364,7 @@ export default function CGPACalculatorPage() {
                           setCumulativeCourses(updated);
                         }}
                         placeholder={`Course ${index + 1}`}
-                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
+                        className="w-full px-3 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
                       />
                     </div>
 
@@ -348,7 +376,7 @@ export default function CGPACalculatorPage() {
                           updated[index].credits = Number(e.target.value);
                           setCumulativeCourses(updated);
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
+                        className="w-full px-2 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
                       >
                         <option value={1}>1.0 Credit</option>
                         <option value={3}>3.0 Credits</option>
@@ -364,7 +392,7 @@ export default function CGPACalculatorPage() {
                           updated[index].grade = e.target.value;
                           setCumulativeCourses(updated);
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-primary-600 dark:text-primary-400"
+                        className="w-full px-2 py-1.5 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-[#1C4370] dark:text-[#1CAF9A]"
                       >
                         {EWU_GRADE_SCALE.map((g) => (
                           <option key={g.grade} value={g.grade}>
@@ -391,7 +419,7 @@ export default function CGPACalculatorPage() {
                 <button
                   type="button"
                   onClick={addCumulativeCourse}
-                  className="inline-flex items-center space-x-1 px-3 py-2 rounded-xl text-xs font-bold bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-300 hover:bg-primary-100 transition-colors"
+                  className="inline-flex items-center space-x-1 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#effaf7] dark:bg-[#072c29] text-[#1CAF9A] hover:bg-[#d6f3ed] transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Another Course</span>
@@ -406,9 +434,9 @@ export default function CGPACalculatorPage() {
 
           {/* TAB 3: WHAT-IF TARGET SOLVER */}
           {activeTab === "whatif" && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm space-y-6">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-6">
               <div>
-                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                <h3 className="font-extrabold text-[#1C4370] dark:text-white text-base">
                   What-If Target CGPA Solver
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -428,7 +456,7 @@ export default function CGPACalculatorPage() {
                     max={4.0}
                     value={currentCGPA}
                     onChange={(e) => setCurrentCGPA(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-[#f0f4f5] dark:bg-slate-800 text-sm font-bold"
                   />
                 </div>
 
@@ -442,7 +470,7 @@ export default function CGPACalculatorPage() {
                     max={180}
                     value={completedCredits}
                     onChange={(e) => setCompletedCredits(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-[#f0f4f5] dark:bg-slate-800 text-sm font-bold"
                   />
                 </div>
 
@@ -457,7 +485,7 @@ export default function CGPACalculatorPage() {
                     max={4.0}
                     value={targetCGPA}
                     onChange={(e) => setTargetCGPA(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold text-primary-600 dark:text-primary-400"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-[#f0f4f5] dark:bg-slate-800 text-sm font-bold text-[#1C4370] dark:text-[#1CAF9A]"
                   />
                 </div>
 
@@ -471,7 +499,7 @@ export default function CGPACalculatorPage() {
                     max={180}
                     value={remainingCredits}
                     onChange={(e) => setRemainingCredits(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E4E7EA] dark:border-slate-700 bg-[#f0f4f5] dark:bg-slate-800 text-sm font-bold"
                   />
                 </div>
               </div>
@@ -494,7 +522,7 @@ export default function CGPACalculatorPage() {
                     <span>Required GPA in Remaining Credits</span>
                   </span>
 
-                  <span className="text-2xl font-black">
+                  <span className="text-3xl font-black">
                     {whatIfResult.requiredGPA.toFixed(2)}
                   </span>
                 </div>
@@ -504,35 +532,35 @@ export default function CGPACalculatorPage() {
           )}
         </div>
 
-        {/* Right Column: Official EWU Grade Scale Reference (4 cols) */}
+        {/* Right Column (4 cols) */}
         <div className="lg:col-span-4 space-y-5">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#E4E7EA] dark:border-slate-800 p-5 shadow-xs space-y-4">
             <div className="flex items-center space-x-2">
-              <BookOpen className="w-4 h-4 text-primary-500" />
-              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+              <BookOpen className="w-4 h-4 text-[#1CAF9A]" />
+              <h3 className="font-extrabold text-sm text-[#1C4370] dark:text-white">
                 Official EWU Grading Scale
               </h3>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800">
+            <div className="overflow-hidden rounded-2xl border border-[#E4E7EA] dark:border-slate-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 font-bold border-b border-slate-100 dark:border-slate-800">
+                <thead className="bg-[#f0f4f5] dark:bg-slate-800/80 text-[#1C4370] dark:text-slate-300 font-bold border-b border-[#E4E7EA] dark:border-slate-800">
                   <tr>
                     <th className="px-3 py-2">Score</th>
                     <th className="px-2 py-2 text-center">Grade</th>
                     <th className="px-2 py-2 text-right">Point</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                <tbody className="divide-y divide-[#E4E7EA] dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                   {EWU_GRADE_SCALE.map((g) => (
-                    <tr key={g.grade} className="hover:bg-slate-50/50">
+                    <tr key={g.grade} className="hover:bg-[#f0f4f5]/40">
                       <td className="px-3 py-1.5 text-[11px] text-slate-500">
                         {g.minMarks}% - {g.maxMarks < 100 ? `<${Math.ceil(g.maxMarks)}%` : "100%"}
                       </td>
-                      <td className="px-2 py-1.5 text-center font-bold text-slate-900 dark:text-white">
+                      <td className="px-2 py-1.5 text-center font-bold text-[#1C4370] dark:text-white">
                         {g.grade}
                       </td>
-                      <td className="px-2 py-1.5 text-right font-semibold text-primary-600 dark:text-primary-400">
+                      <td className="px-2 py-1.5 text-right font-black text-[#1CAF9A]">
                         {g.point.toFixed(2)}
                       </td>
                     </tr>
@@ -542,9 +570,9 @@ export default function CGPACalculatorPage() {
             </div>
 
             {/* Retake Policy Note */}
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/50 rounded-xl border border-amber-200 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-200 space-y-1">
+            <div className="p-3 bg-[#effaf7] dark:bg-[#072c29] rounded-2xl border border-[#1CAF9A]/30 text-[11px] text-[#164b44] dark:text-[#b0e8dc] space-y-1">
               <strong className="flex items-center space-x-1">
-                <Info className="w-3.5 h-3.5" />
+                <Info className="w-3.5 h-3.5 text-[#1CAF9A]" />
                 <span>EWU Retake Policy:</span>
               </strong>
               <p className="leading-relaxed">
