@@ -9,30 +9,45 @@ export interface SolveResult {
   message?: string;
 }
 
-interface SectionWithMask {
-  section: Section;
-  mask: SectionBitmask;
+interface SectionUnit {
+  primarySection: Section;
+  companionSection?: Section;
+  masks: SectionBitmask[];
 }
 
 export function solveTimetables(
   coursesSections: Section[][],
   preferences: PlannerPreferences,
-  limit: number = 200
+  limit: number = 200,
+  allAvailableSections?: Section[]
 ): SolveResult {
   if (!coursesSections || coursesSections.length === 0) {
     return { plans: [], totalCombinationsSearched: 0, message: "No courses provided." };
+  }
+
+  // Quick lookup map for linked companion sections (e.g. Theory <-> Lab)
+  const sectionById = new Map<string, Section>();
+  if (allAvailableSections) {
+    for (const s of allAvailableSections) {
+      sectionById.set(s.id, s);
+    }
+  } else {
+    for (const list of coursesSections) {
+      for (const s of list) {
+        sectionById.set(s.id, s);
+      }
+    }
   }
 
   // Pre-filter sections if seatsOnly is specified
   const filteredCourses: Section[][] = coursesSections.map((secList) => {
     if (preferences.seatsOnly) {
       const withSeats = secList.filter((s) => s.seats === undefined || s.seats > 0);
-      return withSeats.length > 0 ? withSeats : secList; // fallback if no section has seats
+      return withSeats.length > 0 ? withSeats : secList;
     }
     return secList;
   });
 
-  // Check if any course has 0 sections
   const emptyCourseIdx = filteredCourses.findIndex((list) => list.length === 0);
   if (emptyCourseIdx !== -1) {
     return {
@@ -42,51 +57,70 @@ export function solveTimetables(
     };
   }
 
-  // Prepare with bitmasks
-  const preparedCourses: SectionWithMask[][] = filteredCourses.map((list) =>
-    list.map((section) => ({
-      section,
-      mask: computeSectionBitmask(section),
-    }))
+  // Build units (including linked companion lab/theory sections if present)
+  const preparedUnits: SectionUnit[][] = filteredCourses.map((list) =>
+    list.map((section) => {
+      const companion = section.linkedTo ? sectionById.get(section.linkedTo) : undefined;
+      const masks: SectionBitmask[] = [computeSectionBitmask(section)];
+      if (companion) {
+        masks.push(computeSectionBitmask(companion));
+      }
+      return {
+        primarySection: section,
+        companionSection: companion,
+        masks,
+      };
+    })
   );
 
-  // Heuristic: sort courses by fewest sections first to fail early in backtracking
-  // Keep track of original order indices if needed
-  const indexed = preparedCourses.map((list, originalIdx) => ({ list, originalIdx }));
-  indexed.sort((a, b) => a.list.length - b.list.length);
-
+  // Heuristic: sort courses by fewest candidate units first to prune early
+  const indexed = preparedUnits.map((list) => ({ list, count: list.length }));
+  indexed.sort((a, b) => a.count - b.count);
   const sortedCourses = indexed.map((item) => item.list);
 
   const rawSolutions: Section[][] = [];
-  const picked: SectionWithMask[] = [];
+  const pickedUnits: SectionUnit[] = [];
   let combinationsExplored = 0;
 
   function backtrack(depth: number) {
     if (rawSolutions.length >= limit) return;
 
     if (depth === sortedCourses.length) {
-      // Found clash-free combination!
-      rawSolutions.push(picked.map((p) => p.section));
+      // Collect all sections (both primary and bundled companion sections)
+      const fullPlanSections: Section[] = [];
+      for (const unit of pickedUnits) {
+        fullPlanSections.push(unit.primarySection);
+        if (unit.companionSection) {
+          fullPlanSections.push(unit.companionSection);
+        }
+      }
+      rawSolutions.push(fullPlanSections);
       return;
     }
 
-    const currentCourseSections = sortedCourses[depth];
-    for (const item of currentCourseSections) {
+    const currentCourseUnits = sortedCourses[depth];
+    for (const unit of currentCourseUnits) {
       combinationsExplored++;
 
-      // Check clash against all previously picked sections
+      // Check if ANY mask in this unit clashes with ANY mask in previously picked units
       let clash = false;
-      for (const p of picked) {
-        if (bitmasksClash(p.mask, item.mask)) {
-          clash = true;
-          break;
+      for (const picked of pickedUnits) {
+        for (const pMask of picked.masks) {
+          for (const uMask of unit.masks) {
+            if (bitmasksClash(pMask, uMask)) {
+              clash = true;
+              break;
+            }
+          }
+          if (clash) break;
         }
+        if (clash) break;
       }
 
       if (!clash) {
-        picked.push(item);
+        pickedUnits.push(unit);
         backtrack(depth + 1);
-        picked.pop();
+        pickedUnits.pop();
         if (rawSolutions.length >= limit) return;
       }
     }
@@ -94,7 +128,7 @@ export function solveTimetables(
 
   backtrack(0);
 
-  // If no clash-free solution found, diagnose the most frequent conflict
+  // If 0 clash-free combinations found, diagnose conflict
   let conflictPair: { courseA: string; courseB: string; count: number } | undefined;
   if (rawSolutions.length === 0 && coursesSections.length > 1) {
     const pairClashes = new Map<string, number>();
@@ -153,7 +187,6 @@ export function solveTimetables(
     };
   });
 
-  // Sort descending by score
   plans.sort((a, b) => b.score - a.score);
 
   return {

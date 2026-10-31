@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { solveTimetables } from "../src/lib/planner/solve";
 import { doSectionsClash } from "../src/lib/planner/clash";
 import { SEED_SECTIONS_FALL_2026 } from "../src/lib/data/seedData";
-import { PlannerPreferences } from "../src/lib/types";
+import { PlannerPreferences, Section } from "../src/lib/types";
 
 describe("Advising Planner Solver", () => {
   const defaultPrefs: PlannerPreferences = {
@@ -25,7 +25,6 @@ describe("Advising Planner Solver", () => {
 
     // Property-style test: EVERY returned plan must contain zero clashes between any pair of sections
     for (const plan of result.plans) {
-      expect(plan.sections.length).toBe(3);
       for (let i = 0; i < plan.sections.length; i++) {
         for (let j = i + 1; j < plan.sections.length; j++) {
           const clash = doSectionsClash(plan.sections[i], plan.sections[j]);
@@ -33,6 +32,32 @@ describe("Advising Planner Solver", () => {
         }
       }
     }
+  });
+
+  it("bundles linked lab section automatically with theory section", () => {
+    // CSE110 Section 1 is linkedTo F26-CSE110L-1
+    const cse110Sec1 = SEED_SECTIONS_FALL_2026.find((s) => s.id === "F26-CSE110-1")!;
+    const cse110LSec1 = SEED_SECTIONS_FALL_2026.find((s) => s.id === "F26-CSE110L-1")!;
+
+    // MAT101 Section 1
+    const mat101 = SEED_SECTIONS_FALL_2026.filter((s) => s.courseCode === "MAT101");
+
+    const result = solveTimetables(
+      [[cse110Sec1], mat101],
+      defaultPrefs,
+      10,
+      SEED_SECTIONS_FALL_2026
+    );
+
+    expect(result.plans.length).toBeGreaterThan(0);
+    const topPlan = result.plans[0];
+
+    // The plan should include both CSE110 and its linked companion CSE110L
+    const hasTheory = topPlan.sections.some((s) => s.id === "F26-CSE110-1");
+    const hasLab = topPlan.sections.some((s) => s.id === "F26-CSE110L-1");
+
+    expect(hasTheory).toBe(true);
+    expect(hasLab).toBe(true);
   });
 
   it("scores and ranks preferred faculty higher", () => {
@@ -47,15 +72,13 @@ describe("Advising Planner Solver", () => {
     const result = solveTimetables([cse110, cse207], prefsWithFaculty, 50);
     expect(result.plans.length).toBeGreaterThan(0);
 
-    // Top plan should prioritize the preferred faculty
     const topPlan = result.plans[0];
     const hasMAR = topPlan.sections.some((s) => s.faculty === "MAR");
     expect(hasMAR).toBe(true);
   });
 
   it("diagnoses conflict pair when courses have 100% clash", () => {
-    // Construct 2 single-section courses that clash exactly
-    const courseA = [SEED_SECTIONS_FALL_2026[0]]; // CSE110-1 (ST 08:30-10:00)
+    const courseA = [SEED_SECTIONS_FALL_2026[0]];
     const courseB = [{
       ...SEED_SECTIONS_FALL_2026[0],
       id: "CLASH-1",
