@@ -34,25 +34,25 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <nav className="sticky top-0 z-50 bg-[#1C4370] text-white shadow-md border-b border-[#264e7c] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-700 to-primary-500 flex items-center justify-center text-white shadow-md shadow-primary-500/20 group-hover:scale-105 transition-transform">
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-[#1CAF9A] shadow-inner group-hover:scale-105 transition-transform">
               <Compass className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                  EWU<span className="text-primary-600 dark:text-primary-400">Pro</span>
+                <span className="font-extrabold text-xl tracking-tight text-white">
+                  EWU<span className="text-[#1CAF9A]">Pro</span>
                 </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-primary-100 dark:bg-primary-950 text-primary-700 dark:text-primary-300 rounded border border-primary-200 dark:border-primary-800">
-                  v1.0
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#1CAF9A]/20 text-[#1CAF9A] rounded border border-[#1CAF9A]/30">
+                  PORTAL
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                Advising & CGPA Companion
+              <p className="text-[10px] text-white/70 font-medium">
+                East West University Advising Companion
               </p>
             </div>
           </Link>
@@ -66,13 +66,13 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                     isActive
-                      ? "bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 font-semibold"
-                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  } ${item.highlight && !isActive ? "text-primary-600 dark:text-primary-400" : ""}`}
+                      ? "bg-[#1CAF9A] text-white shadow-sm"
+                      : "text-white/80 hover:text-white hover:bg-white/10"
+                  } ${item.highlight && !isActive ? "text-[#1CAF9A] font-extrabold" : ""}`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-primary-600 dark:text-primary-400" : ""}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "opacity-80"}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -84,15 +84,15 @@ export function Navbar() {
             <button
               onClick={toggleTheme}
               aria-label="Toggle Theme"
-              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
             >
-              {theme === "dark" ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+              {theme === "dark" ? <Sun className="w-5 h-5 text-amber-300" /> : <Moon className="w-5 h-5 text-white/90" />}
             </button>
 
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="md:hidden p-2 rounded-xl text-white hover:bg-white/10"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -102,7 +102,7 @@ export function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden border-t border-white/10 bg-[#17385e] px-4 pt-2 pb-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -111,13 +111,13 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
+                className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                   isActive
-                    ? "bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400 font-semibold"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-[#1CAF9A] text-white"
+                    : "text-white/80 hover:bg-white/10 text-white"
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4" />
                 <span>{item.label}</span>
               </Link>
             );

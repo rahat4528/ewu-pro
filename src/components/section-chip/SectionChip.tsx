@@ -1,6 +1,6 @@
 import React from "react";
 import { Section } from "@/lib/types";
-import { User, MapPin, Users } from "lucide-react";
+import { User, MapPin } from "lucide-react";
 
 interface SectionChipProps {
   section: Section;
@@ -16,34 +16,34 @@ export function SectionChip({ section, onClick, selected }: SectionChipProps) {
   return (
     <div
       onClick={onClick}
-      className={`inline-flex flex-col p-2.5 rounded-xl border transition-all text-xs cursor-pointer select-none ${
+      className={`inline-flex flex-col p-2.5 rounded-2xl border transition-all text-xs cursor-pointer select-none ${
         selected
-          ? "bg-primary-50 dark:bg-primary-950/60 border-primary-500 ring-2 ring-primary-500/20"
-          : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
+          ? "bg-[#effaf7] dark:bg-[#072c29] border-[#1CAF9A] ring-2 ring-[#1CAF9A]/30 shadow-xs"
+          : "bg-white dark:bg-slate-800/90 border-[#E4E7EA] dark:border-slate-700/80 hover:border-[#1CAF9A] hover:shadow-xs"
       }`}
     >
       <div className="flex items-center justify-between space-x-2">
-        <span className="font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <span className="font-black text-[#1C4370] dark:text-white tracking-tight">
           {section.courseCode}
         </span>
-        <span className="font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px]">
+        <span className="font-bold px-1.5 py-0.5 rounded-lg bg-[#f0f4f5] dark:bg-slate-700 text-[#1C4370] dark:text-[#1CAF9A] text-[10px]">
           Sec {section.sectionNo}
         </span>
       </div>
 
       <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 gap-2">
-        <span className="inline-flex items-center space-x-1 font-medium">
-          <User className="w-3 h-3 text-slate-400" />
+        <span className="inline-flex items-center space-x-1 font-semibold text-slate-700 dark:text-slate-300">
+          <User className="w-3 h-3 text-[#1CAF9A]" />
           <span>{section.faculty}</span>
         </span>
 
         <span
-          className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+          className={`px-1.5 py-0.5 rounded-lg text-[10px] font-bold ${
             isFull
-              ? "bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300"
+              ? "bg-[#D9534F]/10 text-[#D9534F]"
               : isLow
-              ? "bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300"
-              : "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300"
+              ? "bg-[#F0AD4E]/15 text-[#b07d12]"
+              : "bg-[#5cb85c]/15 text-[#3d8b3d]"
           }`}
           title={`${seats} seats remaining`}
         >

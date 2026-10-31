@@ -3,25 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 15, 23, 42;
-  --background-start-rgb: 248, 250, 252;
-  --background-end-rgb: 241, 245, 249;
+  --foreground-rgb: 44, 62, 80;
+  --background-start-rgb: 240, 244, 245; /* #f0f4f5 portal background */
+  --background-end-rgb: 249, 251, 252;   /* #f9fbfc portal soft */
 }
 
 .dark {
-  --foreground-rgb: 248, 250, 252;
-  --background-start-rgb: 10, 15, 29;
-  --background-end-rgb: 15, 23, 42;
+  --foreground-rgb: 240, 244, 248;
+  --background-start-rgb: 15, 33, 57;    /* #0f2139 deep EWU navy */
+  --background-end-rgb: 23, 52, 86;     /* #173456 */
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
-      transparent,
+      rgb(var(--background-start-rgb)),
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    );
   min-height: 100vh;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
@@ -37,12 +36,20 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(28, 67, 112, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.7);
+  background: rgba(28, 67, 112, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(28, 175, 154, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(28, 175, 154, 0.6);
 }
 
 @media print {
