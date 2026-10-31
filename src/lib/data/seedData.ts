@@ -7,7 +7,7 @@ export const SEED_SEMESTERS: Semester[] = [
     published: true,
     importedAt: "2026-10-15T10:00:00Z",
     sourceNote: "Official EWU Offered Courses Bulletin (Fall 2026)",
-    sectionCount: 42,
+    sectionCount: 65,
   },
   {
     id: "sem-summer-2026",
@@ -15,7 +15,7 @@ export const SEED_SEMESTERS: Semester[] = [
     published: true,
     importedAt: "2026-06-10T10:00:00Z",
     sourceNote: "EWU Summer 2026 Final Timetable",
-    sectionCount: 30,
+    sectionCount: 40,
   },
   {
     id: "sem-spring-2026",
@@ -23,7 +23,7 @@ export const SEED_SEMESTERS: Semester[] = [
     published: true,
     importedAt: "2026-01-08T10:00:00Z",
     sourceNote: "EWU Spring 2026 Offered Courses",
-    sectionCount: 32,
+    sectionCount: 38,
   },
   {
     id: "sem-fall-2025",
@@ -31,11 +31,12 @@ export const SEED_SEMESTERS: Semester[] = [
     published: true,
     importedAt: "2025-09-20T10:00:00Z",
     sourceNote: "EWU Archive Fall 2025",
-    sectionCount: 28,
+    sectionCount: 35,
   },
 ];
 
 export const SEED_COURSES: Course[] = [
+  // Computer Science & Engineering (CSE)
   { code: "CSE110", title: "Programming Language I (Python)", credits: 3, department: "CSE" },
   { code: "CSE110L", title: "Programming Language I Lab", credits: 1, department: "CSE" },
   { code: "CSE207", title: "Data Structures", credits: 3, department: "CSE" },
@@ -46,20 +47,50 @@ export const SEED_COURSES: Course[] = [
   { code: "CSE311", title: "Database Systems", credits: 3, department: "CSE" },
   { code: "CSE323", title: "Operating Systems", credits: 3, department: "CSE" },
   { code: "CSE327", title: "Software Engineering", credits: 3, department: "CSE" },
+
+  // Electrical & Electronic Engineering (EEE)
+  { code: "EEE101", title: "Electrical Circuits I", credits: 3, department: "EEE" },
+  { code: "EEE141", title: "Electrical Circuit Analysis", credits: 3, department: "EEE" },
+  { code: "EEE201", title: "Electronics I", credits: 3, department: "EEE" },
+  { code: "EEE303", title: "Signals and Systems", credits: 3, department: "EEE" },
+
+  // Mathematics & Physical Sciences (MPS)
   { code: "MAT101", title: "Differential and Integral Calculus", credits: 3, department: "MPS" },
   { code: "MAT102", title: "Differential Equations and Special Functions", credits: 3, department: "MPS" },
+  { code: "MAT104", title: "Coordinate Geometry and Vector Analysis", credits: 3, department: "MPS" },
   { code: "MAT205", title: "Linear Algebra & Complex Variables", credits: 3, department: "MPS" },
   { code: "PHY109", title: "Engineering Physics I", credits: 3, department: "MPS" },
+  { code: "CHE109", title: "General Chemistry", credits: 3, department: "MPS" },
+
+  // Business Administration (BBA)
+  { code: "ACT101", title: "Financial Accounting", credits: 3, department: "BBA" },
+  { code: "ACT201", title: "Management Accounting", credits: 3, department: "BBA" },
+  { code: "BUS101", title: "Introduction to Business", credits: 3, department: "BBA" },
+  { code: "FIN101", title: "Principles of Finance", credits: 3, department: "BBA" },
+  { code: "MKT101", title: "Principles of Marketing", credits: 3, department: "BBA" },
+  { code: "MGT101", title: "Principles of Management", credits: 3, department: "BBA" },
+  { code: "HRM101", title: "Human Resource Management", credits: 3, department: "BBA" },
+
+  // Economics (ECO)
+  { code: "ECO101", title: "Principles of Microeconomics", credits: 3, department: "ECO" },
+  { code: "ECO104", title: "Principles of Macroeconomics", credits: 3, department: "ECO" },
+  { code: "ECO201", title: "Intermediate Microeconomics", credits: 3, department: "ECO" },
+
+  // English (ENG)
   { code: "ENG101", title: "Basic English", credits: 3, department: "ENG" },
   { code: "ENG102", title: "English Reading and Writing", credits: 3, department: "ENG" },
-  { code: "ACT101", title: "Financial Accounting", credits: 3, department: "BBA" },
-  { code: "BUS101", title: "Introduction to Business", credits: 3, department: "BBA" },
-  { code: "ECO101", title: "Principles of Microeconomics", credits: 3, department: "ECO" },
-  { code: "EEE101", title: "Electrical Circuits I", credits: 3, department: "EEE" },
+
+  // Pharmacy (PHR)
+  { code: "PHR101", title: "Inorganic Pharmacy I", credits: 3, department: "PHR" },
+  { code: "PHR102", title: "Physical Pharmacy I", credits: 3, department: "PHR" },
+
+  // Law (LAW)
+  { code: "LAW101", title: "Jurisprudence and Legal Theory", credits: 3, department: "LAW" },
+  { code: "LAW102", title: "Legal System of Bangladesh", credits: 3, department: "LAW" },
 ];
 
 export const SEED_SECTIONS_FALL_2026: Section[] = [
-  // CSE110 - Intro to Programming
+  // --- CSE110 Theory & Lab Pairs ---
   {
     id: "F26-CSE110-1",
     semester: "Fall 2026",
@@ -76,6 +107,26 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     seats: 4,
     capacity: 35,
     type: "THEORY",
+    linkedTo: "F26-CSE110L-1",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-CSE110L-1",
+    semester: "Fall 2026",
+    courseCode: "CSE110L",
+    courseTitle: "Programming Language I Lab",
+    credits: 1,
+    sectionNo: 1,
+    faculty: "MAR",
+    days: ["TUE"],
+    rawDays: "T",
+    start: 610, // 10:10 AM
+    end: 790,   // 01:10 PM (3 hr lab)
+    room: "AB3-601",
+    seats: 4,
+    capacity: 35,
+    type: "LAB",
+    linkedTo: "F26-CSE110-1",
     importedAt: "2026-10-15T10:00:00Z",
   },
   {
@@ -94,6 +145,26 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     seats: 0,
     capacity: 35,
     type: "THEORY",
+    linkedTo: "F26-CSE110L-2",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-CSE110L-2",
+    semester: "Fall 2026",
+    courseCode: "CSE110L",
+    courseTitle: "Programming Language I Lab",
+    credits: 1,
+    sectionNo: 2,
+    faculty: "TSH",
+    days: ["SUN"],
+    rawDays: "S",
+    start: 710, // 11:50 AM
+    end: 890,   // 02:50 PM
+    room: "AB3-602",
+    seats: 0,
+    capacity: 35,
+    type: "LAB",
+    linkedTo: "F26-CSE110-2",
     importedAt: "2026-10-15T10:00:00Z",
   },
   {
@@ -106,8 +177,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "SMR",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 510, // 08:30 AM
-    end: 600,   // 10:00 AM
+    start: 510,
+    end: 600,
     room: "AB3-405",
     seats: 12,
     capacity: 35,
@@ -124,8 +195,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "FK",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
+    start: 710,
+    end: 800,
     room: "AB3-408",
     seats: 18,
     capacity: 35,
@@ -133,7 +204,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // CSE207 - Data Structures
+  // --- CSE207 Data Structures ---
   {
     id: "F26-CSE207-1",
     semester: "Fall 2026",
@@ -144,12 +215,32 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "AH",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB3-501",
     seats: 5,
     capacity: 35,
     type: "THEORY",
+    linkedTo: "F26-CSE207L-1",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-CSE207L-1",
+    semester: "Fall 2026",
+    courseCode: "CSE207L",
+    courseTitle: "Data Structures Lab",
+    credits: 1,
+    sectionNo: 1,
+    faculty: "AH",
+    days: ["THU"],
+    rawDays: "R",
+    start: 510,
+    end: 690,
+    room: "AB3-605",
+    seats: 5,
+    capacity: 35,
+    type: "LAB",
+    linkedTo: "F26-CSE207-1",
     importedAt: "2026-10-15T10:00:00Z",
   },
   {
@@ -162,8 +253,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MRA",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
+    start: 710,
+    end: 800,
     room: "AB3-502",
     seats: 8,
     capacity: 35,
@@ -180,8 +271,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "TSH",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB3-504",
     seats: 2,
     capacity: 35,
@@ -198,8 +289,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "FK",
     days: ["TUE", "THU"],
     rawDays: "TR",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB3-506",
     seats: 14,
     capacity: 35,
@@ -207,7 +298,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // CSE209 - Discrete Mathematics
+  // --- CSE209 Discrete Math ---
   {
     id: "F26-CSE209-1",
     semester: "Fall 2026",
@@ -218,8 +309,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MAR",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
+    start: 710,
+    end: 800,
     room: "AB3-401",
     seats: 9,
     capacity: 35,
@@ -236,8 +327,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "AH",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 510, // 08:30 AM
-    end: 600,   // 10:00 AM
+    start: 510,
+    end: 600,
     room: "AB3-403",
     seats: 16,
     capacity: 35,
@@ -254,8 +345,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "TSH",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB3-405",
     seats: 7,
     capacity: 35,
@@ -263,7 +354,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // CSE246 - Algorithms
+  // --- CSE246 Algorithms ---
   {
     id: "F26-CSE246-1",
     semester: "Fall 2026",
@@ -274,8 +365,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MRA",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 510, // 08:30 AM
-    end: 600,   // 10:00 AM
+    start: 510,
+    end: 600,
     room: "AB3-601",
     seats: 11,
     capacity: 35,
@@ -292,8 +383,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "FK",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB3-602",
     seats: 0,
     capacity: 35,
@@ -310,8 +401,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "AH",
     days: ["SUN", "THU"],
     rawDays: "SR",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB3-604",
     seats: 15,
     capacity: 35,
@@ -319,7 +410,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // CSE311 - Database Systems
+  // --- CSE311 Database Systems ---
   {
     id: "F26-CSE311-1",
     semester: "Fall 2026",
@@ -330,8 +421,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "SMR",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB3-503",
     seats: 6,
     capacity: 35,
@@ -348,8 +439,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MAR",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
+    start: 710,
+    end: 800,
     room: "AB3-505",
     seats: 10,
     capacity: 35,
@@ -357,7 +448,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // CSE327 - Software Engineering
+  // --- CSE327 Software Engineering ---
   {
     id: "F26-CSE327-1",
     semester: "Fall 2026",
@@ -368,34 +459,16 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MRA",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 910, // 03:10 PM
-    end: 1000,  // 04:40 PM
+    start: 910,
+    end: 1000,
     room: "AB3-402",
     seats: 19,
     capacity: 35,
     type: "THEORY",
     importedAt: "2026-10-15T10:00:00Z",
   },
-  {
-    id: "F26-CSE327-2",
-    semester: "Fall 2026",
-    courseCode: "CSE327",
-    courseTitle: "Software Engineering",
-    credits: 3,
-    sectionNo: 2,
-    faculty: "FK",
-    days: ["MON", "WED"],
-    rawDays: "MW",
-    start: 910, // 03:10 PM
-    end: 1000,  // 04:40 PM
-    room: "AB3-404",
-    seats: 8,
-    capacity: 35,
-    type: "THEORY",
-    importedAt: "2026-10-15T10:00:00Z",
-  },
 
-  // MAT101 - Calculus
+  // --- MAT101 Calculus ---
   {
     id: "F26-MAT101-1",
     semester: "Fall 2026",
@@ -406,8 +479,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "KHA",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 510, // 08:30 AM
-    end: 600,   // 10:00 AM
+    start: 510,
+    end: 600,
     room: "AB2-201",
     seats: 7,
     capacity: 35,
@@ -424,8 +497,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "SHM",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
+    start: 710,
+    end: 800,
     room: "AB2-203",
     seats: 3,
     capacity: 35,
@@ -442,8 +515,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "KHA",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB2-205",
     seats: 12,
     capacity: 35,
@@ -451,7 +524,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // MAT102 - Diff Equations
+  // --- MAT102 Differential Equations ---
   {
     id: "F26-MAT102-1",
     semester: "Fall 2026",
@@ -462,8 +535,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "SHM",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB2-202",
     seats: 14,
     capacity: 35,
@@ -480,8 +553,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "KHA",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB2-204",
     seats: 21,
     capacity: 35,
@@ -489,7 +562,27 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // ENG101 - Basic English
+  // --- MAT205 Linear Algebra ---
+  {
+    id: "F26-MAT205-1",
+    semester: "Fall 2026",
+    courseCode: "MAT205",
+    courseTitle: "Linear Algebra & Complex Variables",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "KHA",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 810,
+    end: 900,
+    room: "AB2-206",
+    seats: 15,
+    capacity: 35,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+
+  // --- ENG101 Basic English ---
   {
     id: "F26-ENG101-1",
     semester: "Fall 2026",
@@ -500,8 +593,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "NZA",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 610, // 10:10 AM
-    end: 700,   // 11:40 AM
+    start: 610,
+    end: 700,
     room: "AB1-301",
     seats: 4,
     capacity: 30,
@@ -518,8 +611,8 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "TBA",
     days: ["MON", "WED"],
     rawDays: "MW",
-    start: 510, // 08:30 AM
-    end: 600,   // 10:00 AM
+    start: 510,
+    end: 600,
     room: "AB1-302",
     seats: 9,
     capacity: 30,
@@ -527,7 +620,7 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
 
-  // PHY109 - Physics I
+  // --- PHY109 Physics I ---
   {
     id: "F26-PHY109-1",
     semester: "Fall 2026",
@@ -538,92 +631,16 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     faculty: "MNH",
     days: ["SUN", "TUE"],
     rawDays: "ST",
-    start: 810, // 01:30 PM
-    end: 900,   // 03:00 PM
+    start: 810,
+    end: 900,
     room: "AB2-101",
     seats: 10,
     capacity: 35,
     type: "THEORY",
     importedAt: "2026-10-15T10:00:00Z",
   },
-  {
-    id: "F26-PHY109-2",
-    semester: "Fall 2026",
-    courseCode: "PHY109",
-    courseTitle: "Engineering Physics I",
-    credits: 3,
-    sectionNo: 2,
-    faculty: "MNH",
-    days: ["MON", "WED"],
-    rawDays: "MW",
-    start: 710, // 11:50 AM
-    end: 800,   // 01:20 PM
-    room: "AB2-103",
-    seats: 5,
-    capacity: 35,
-    type: "THEORY",
-    importedAt: "2026-10-15T10:00:00Z",
-  },
 
-  // ACT101 - Financial Accounting
-  {
-    id: "F26-ACT101-1",
-    semester: "Fall 2026",
-    courseCode: "ACT101",
-    courseTitle: "Financial Accounting",
-    credits: 3,
-    sectionNo: 1,
-    faculty: "MMA",
-    days: ["SUN", "TUE"],
-    rawDays: "ST",
-    start: 510,
-    end: 600,
-    room: "AB4-201",
-    seats: 15,
-    capacity: 40,
-    type: "THEORY",
-    importedAt: "2026-10-15T10:00:00Z",
-  },
-  {
-    id: "F26-ACT101-2",
-    semester: "Fall 2026",
-    courseCode: "ACT101",
-    courseTitle: "Financial Accounting",
-    credits: 3,
-    sectionNo: 2,
-    faculty: "MMA",
-    days: ["MON", "WED"],
-    rawDays: "MW",
-    start: 610,
-    end: 700,
-    room: "AB4-202",
-    seats: 8,
-    capacity: 40,
-    type: "THEORY",
-    importedAt: "2026-10-15T10:00:00Z",
-  },
-
-  // ECO101 - Microeconomics
-  {
-    id: "F26-ECO101-1",
-    semester: "Fall 2026",
-    courseCode: "ECO101",
-    courseTitle: "Principles of Microeconomics",
-    credits: 3,
-    sectionNo: 1,
-    faculty: "SRK",
-    days: ["SUN", "TUE"],
-    rawDays: "ST",
-    start: 710,
-    end: 800,
-    room: "AB4-301",
-    seats: 12,
-    capacity: 40,
-    type: "THEORY",
-    importedAt: "2026-10-15T10:00:00Z",
-  },
-
-  // EEE101 - Electrical Circuits I
+  // --- EEE101 / EEE141 Electrical Circuits ---
   {
     id: "F26-EEE101-1",
     semester: "Fall 2026",
@@ -643,12 +660,12 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     importedAt: "2026-10-15T10:00:00Z",
   },
   {
-    id: "F26-EEE101-2",
+    id: "F26-EEE141-1",
     semester: "Fall 2026",
-    courseCode: "EEE101",
-    courseTitle: "Electrical Circuits I",
+    courseCode: "EEE141",
+    courseTitle: "Electrical Circuit Analysis",
     credits: 3,
-    sectionNo: 2,
+    sectionNo: 1,
     faculty: "KRA",
     days: ["MON", "WED"],
     rawDays: "MW",
@@ -657,6 +674,212 @@ export const SEED_SECTIONS_FALL_2026: Section[] = [
     room: "AB2-403",
     seats: 6,
     capacity: 35,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+
+  // --- BBA Courses (ACT101, MKT101, FIN101, MGT101, HRM101) ---
+  {
+    id: "F26-ACT101-1",
+    semester: "Fall 2026",
+    courseCode: "ACT101",
+    courseTitle: "Financial Accounting",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "MMA",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 510,
+    end: 600,
+    room: "AB4-201",
+    seats: 15,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-MKT101-1",
+    semester: "Fall 2026",
+    courseCode: "MKT101",
+    courseTitle: "Principles of Marketing",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "KZM",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 610,
+    end: 700,
+    room: "AB4-203",
+    seats: 22,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-FIN101-1",
+    semester: "Fall 2026",
+    courseCode: "FIN101",
+    courseTitle: "Principles of Finance",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "TAZ",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 710,
+    end: 800,
+    room: "AB4-205",
+    seats: 18,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-MGT101-1",
+    semester: "Fall 2026",
+    courseCode: "MGT101",
+    courseTitle: "Principles of Management",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "SRK",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 510,
+    end: 600,
+    room: "AB4-302",
+    seats: 25,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-HRM101-1",
+    semester: "Fall 2026",
+    courseCode: "HRM101",
+    courseTitle: "Human Resource Management",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "TAZ",
+    days: ["SUN", "THU"],
+    rawDays: "SR",
+    start: 810,
+    end: 900,
+    room: "AB4-304",
+    seats: 14,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+
+  // --- Economics (ECO101, ECO104) ---
+  {
+    id: "F26-ECO101-1",
+    semester: "Fall 2026",
+    courseCode: "ECO101",
+    courseTitle: "Principles of Microeconomics",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "SRK",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 710,
+    end: 800,
+    room: "AB4-301",
+    seats: 12,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-ECO104-1",
+    semester: "Fall 2026",
+    courseCode: "ECO104",
+    courseTitle: "Principles of Macroeconomics",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "SRK",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 710,
+    end: 800,
+    room: "AB4-303",
+    seats: 19,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+
+  // --- Pharmacy (PHR101, PHR102) ---
+  {
+    id: "F26-PHR101-1",
+    semester: "Fall 2026",
+    courseCode: "PHR101",
+    courseTitle: "Inorganic Pharmacy I",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "SZK",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 510,
+    end: 600,
+    room: "AB1-201",
+    seats: 10,
+    capacity: 35,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-PHR102-1",
+    semester: "Fall 2026",
+    courseCode: "PHR102",
+    courseTitle: "Physical Pharmacy I",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "SZK",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 610,
+    end: 700,
+    room: "AB1-203",
+    seats: 16,
+    capacity: 35,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+
+  // --- Law (LAW101, LAW102) ---
+  {
+    id: "F26-LAW101-1",
+    semester: "Fall 2026",
+    courseCode: "LAW101",
+    courseTitle: "Jurisprudence and Legal Theory",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "FHA",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 610,
+    end: 700,
+    room: "AB1-401",
+    seats: 20,
+    capacity: 40,
+    type: "THEORY",
+    importedAt: "2026-10-15T10:00:00Z",
+  },
+  {
+    id: "F26-LAW102-1",
+    semester: "Fall 2026",
+    courseCode: "LAW102",
+    courseTitle: "Legal System of Bangladesh",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "FHA",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 810,
+    end: 900,
+    room: "AB1-403",
+    seats: 24,
+    capacity: 40,
     type: "THEORY",
     importedAt: "2026-10-15T10:00:00Z",
   },
@@ -765,6 +988,23 @@ export const SEED_SECTIONS_SUMMER_2026: Section[] = [
     capacity: 30,
     type: "THEORY",
   },
+  {
+    id: "S26-MKT101-1",
+    semester: "Summer 2026",
+    courseCode: "MKT101",
+    courseTitle: "Principles of Marketing",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "KZM",
+    days: ["SUN", "TUE"],
+    rawDays: "ST",
+    start: 610,
+    end: 700,
+    room: "AB4-203",
+    seats: 0,
+    capacity: 40,
+    type: "THEORY",
+  },
 ];
 
 export const SEED_SECTIONS_SPRING_2026: Section[] = [
@@ -800,6 +1040,23 @@ export const SEED_SECTIONS_SPRING_2026: Section[] = [
     room: "AB3-501",
     seats: 0,
     capacity: 35,
+    type: "THEORY",
+  },
+  {
+    id: "SP26-FIN101-1",
+    semester: "Spring 2026",
+    courseCode: "FIN101",
+    courseTitle: "Principles of Finance",
+    credits: 3,
+    sectionNo: 1,
+    faculty: "TAZ",
+    days: ["MON", "WED"],
+    rawDays: "MW",
+    start: 710,
+    end: 800,
+    room: "AB4-205",
+    seats: 0,
+    capacity: 40,
     type: "THEORY",
   },
 ];
